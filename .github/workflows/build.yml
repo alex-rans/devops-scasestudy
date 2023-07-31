@@ -1,0 +1,29 @@
+﻿name: Compile into .exe
+on: push
+jobs:
+  compiling:
+    runs-on: ubuntu-latest
+    name: Compiling program
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK 6.0
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: 6.0.x
+#      - name: print pwd
+#        run: pwd
+#      - name: ls files
+#        run: ls -a
+      - name: Install dependencies
+        run: dotnet restore 
+      - name: Build
+        run: dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Rans_DevopsCasestudy
+          path: /home/runner/work/Devops-case-study/Devops-case-study/DevopsCaseStudy/bin/Release/net6.0/win-x64/publish/
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+        
+  
